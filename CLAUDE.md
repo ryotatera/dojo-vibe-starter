@@ -116,6 +116,52 @@ Claude Code が**毎回の作業の最初に必ず読む**ファイルです。
 
 ---
 
+## 5-2. 「動くツール」を作るときの技術ルール
+
+このプロジェクトのゴールは、説明ページ（LP）ではなく **触ると動くツール** です。
+
+| | |
+|---|---|
+| ファイル | **`app/page.tsx` の1枚**で完結させる |
+| 状態 | React の `useState`。ファイル先頭に `"use client"` |
+| 保存 | **`localStorage`**。`useEffect` の中でだけ読み書きする |
+| 画面 | **1画面。**ルーティングを増やさない |
+| 操作 | **3つまで。**4つ目から急に複雑になる |
+| 作らないもの | ログイン・課金・メール送信（第3回で扱う） |
+
+### localStorage は必ずこの形で書く
+
+`useEffect` の外で `localStorage` を読むと、**ビルドが落ちます**（サーバー側に `localStorage` が無いため）。
+
+```tsx
+"use client";
+import { useState, useEffect } from "react";
+
+const KEY = "xxx-data";
+
+export default function Home() {
+  const [items, setItems] = useState<Item[]>([]);
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {                    // 読み込み
+    try {
+      const raw = localStorage.getItem(KEY);
+      setItems(raw ? JSON.parse(raw) : INITIAL);
+    } catch { setItems(INITIAL); }
+    setLoaded(true);
+  }, []);
+
+  useEffect(() => {                    // 保存（読み込み前に走らせない）
+    if (!loaded) return;
+    localStorage.setItem(KEY, JSON.stringify(items));
+  }, [items, loaded]);
+}
+```
+
+> 実装例（ビルド・動作確認済み）: `samples/page.tool-sample.tsx`
+
+---
+
 ## 6. 指示の受け方と、進め方
 
 ### ユーザーの指示は「4つの型」で受け取る
@@ -204,10 +250,11 @@ Claude Code が**毎回の作業の最初に必ず読む**ファイルです。
 │  ├─ page.tsx            ← トップページの中身
 │  └─ globals.css         ← 色・余白・文字サイズの定義
 ├─ docs/
-│  ├─ 01_customer.md      ← 誰の何の課題か（1〜2章のもとになる）
-│  └─ 02_onepager.md      ← 何を作るかの1枚仕様
-├─ samples/               ← 記入例（埋まった状態のサンプル）
-└─ .claude/commands/      ← /kickoff /customer /gtm /plan /build /check
+│  ├─ 01_customer.md      ← 3行＋仮説（1〜2章のもとになる）
+│  ├─ 02_onepager.md      ← 何を作るかの1枚仕様
+│  └─ 03_spec.md          ← 要件定義書（/spec が埋める）
+├─ samples/               ← 記入例と、動くツールの実装例
+└─ .claude/commands/      ← /kickoff /spec /build /customer /gtm /plan /check
 ```
 
 ```

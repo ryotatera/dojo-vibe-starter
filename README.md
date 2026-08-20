@@ -60,8 +60,10 @@ Claude Code で、**自分の事業のサイトをブラウザだけで本番公
 ## STEP 3: claude.ai/code とGitHubをつなぐ（3分）
 
 1. https://claude.ai/code を開く
-2. GitHubの接続を求められるので、**Claude GitHub App をインストール**し、リポジトリへのアクセスを許可
-3. 入力欄の下にあるリポジトリ選択から、STEP 1 で作ったリポジトリを選ぶ
+2. GitHubの接続を求められるので、**Claude GitHub App をインストール**
+3. ⚠️ **Repository access は「All repositories」を選んでください**
+   （「Only select repositories」だと、あとで PR 作成が 403 で失敗します）
+4. 入力欄の下にあるリポジトリ選択から、STEP 1 で作ったリポジトリを選ぶ
 
 > あなたのパソコンでは何も動きません。クラウド上にリポジトリのコピーが用意され、そこで作業が行われます。
 > だからインストールが要らず、タブを閉じても作業は続きます。
@@ -116,7 +118,8 @@ docs/01_customer.md を読んで、その内容に合わせて app/page.tsx の�
 | 症状 | 対処 |
 |---|---|
 | Vercelのビルドが失敗する | リポジトリ名に日本語・記号が入っていないか確認（英数字とハイフンのみ） |
-| claude.ai/code にリポジトリが出てこない | GitHub → Settings → Applications → Claude → Configure で、そのリポジトリが許可されているか確認 |
+| **Create PR で 403**（`Resource not accessible by integration`） | Claude GitHub App が**インストールされていません**。https://github.com/apps/claude/installations/new → **All repositories** → Install<br>※「Authorized GitHub Apps」タブに出ていても書き込み権限はありません（別物） |
+| claude.ai/code にリポジトリが出てこない | 同上。https://github.com/apps/claude/installations/new で All repositories を選ぶ |
 | Claudeが延々と動き続ける | いったん止めて、指示を小さく分けて出し直す |
 | マージしたのにサイトが変わらない | Vercelの `Deployments` タブでビルド中でないか確認。終わっていたらブラウザをスーパーリロード |
 | `Session creation failed` と出る | 1分待って、もう一度送る |
@@ -145,8 +148,9 @@ docs/01_customer.md を読んで、その内容に合わせて app/page.tsx の�
 |---|---|
 | `/customer` | 顧客と課題を1問ずつ聞かれ、`docs/01_customer.md` が埋まる |
 | **`/gtm`** | **出口の3点（誰が払う・どう届く・受け取れる）を1問ずつ詰める。作る前に通す** |
-| `/plan` | 作る前に1枚仕様（`docs/02_onepager.md`）を作る。**まだコードは変えない** |
-| `/build` | 1枚仕様にそって、小さく1ステップだけ実装する |
+| **`/spec`** | **顧客仮説から要件定義書（`docs/03_spec.md`）を作る。まだコードは変えない** |
+| **`/build`** | **要件定義書から、本番URLで動くツールを実装する** |
+| `/plan` | 小さな追加変更の前に1枚仕様を作る |
 | `/check` | 公開前チェック（秘密情報・根拠のない数字・スマホ表示・リンク切れ） |
 
 ---
