@@ -255,6 +255,8 @@ export default function Home() {
 │  └─ 03_spec.md          ← 要件定義書（/spec が埋める）
 ├─ samples/               ← 記入例と、動くツールの実装例
 └─ .claude/commands/      ← /kickoff /spec /build /customer /gtm /plan /check
+                            ※ これはただのMDファイル。他のPJで使うならコピーするか、
+                              中身をそのまま貼れば同じ動きになる
 ```
 
 ```
