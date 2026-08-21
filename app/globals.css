@@ -248,7 +248,8 @@ textarea.field { resize: vertical; min-height: 76px; line-height: 1.7; }
   border: none; background: none; color: var(--accent); font-weight: 700;
   font-size: var(--t-sm); cursor: pointer; padding: 0; text-decoration: underline;
 }
-.danger-btn { border-color: var(--danger); color: var(--danger); }
+/* 削除は「普段は静か・触ったときだけ赤」。一覧に赤い枠が並ぶと画面が騒がしくなる */
+.danger-btn { color: var(--text-weak); }
 .danger-btn:hover { border-color: var(--danger); color: var(--danger); background: var(--danger-weak); }
 
 .row.clickable { cursor: pointer; }
@@ -276,3 +277,16 @@ textarea.field { resize: vertical; min-height: 76px; line-height: 1.7; }
   .row { flex-wrap: wrap; }
   .row-meta { margin-left: 0; width: 100%; }
 }
+
+/* 見本データの注記（アクセントの縦線は使わない＝AIっぽく見えるため） */
+.notice{
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 11px 14px;
+  font-size: var(--t-sm);
+  line-height: 1.7;
+  color: var(--text-sub);
+  margin-bottom: var(--s5);
+}
+.notice b{ color: var(--text); font-weight: 700; }

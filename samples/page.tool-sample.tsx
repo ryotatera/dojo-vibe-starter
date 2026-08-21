@@ -28,12 +28,30 @@ type Filter = "open" | "done" | "all";
 const KEY = "starter-records";
 const NAME_KEY = "starter-appname";
 
-const CATEGORIES = ["LINE", "電話", "メール", "その他"];
+const CATEGORIES = ["LINE", "電話", "メール", "紹介"];
 
+/** n日前の日付。見本データが、いつ開いても「今の話」に見えるようにする */
+const ago = (n: number) => new Date(Date.now() - n * 86400000).toISOString().slice(0, 10);
+
+/**
+ * 見本データ。/build でこの中身を題材に合わせて入れ替える。
+ * ⚠ 実在の人名・連絡先は使わない。件数は10件以上（少ないと画面が寂しく見える）
+ */
 const SAMPLE: Record[] = [
-  { id: "s1", name: "見本：Aさん", category: "LINE", note: "週2希望・英語と数学", date: "2026-08-17", done: false },
-  { id: "s2", name: "見本：Bさん", category: "電話", note: "折り返し希望 18時以降", date: "2026-08-20", done: false },
-  { id: "s3", name: "見本：Cさん", category: "メール", note: "資料送付済み", date: "2026-08-15", done: true },
+  { id: "s01", name: "佐藤さん（中2）",  category: "LINE",  note: "数学と英語、週2希望。木曜以外",       date: ago(0),  done: false },
+  { id: "s02", name: "田村さん（小5）",  category: "電話",  note: "折り返し希望 18時以降",              date: ago(1),  done: false },
+  { id: "s03", name: "鈴木さん（高1）",  category: "紹介",  note: "在籍生のご家族から。物理を見てほしい", date: ago(1),  done: false },
+  { id: "s04", name: "中村さん（中3）",  category: "メール", note: "受験相談。志望校はまだ決めていない",  date: ago(2),  done: false },
+  { id: "s05", name: "渡辺さん（中2）",  category: "紹介",  note: "平日夕方のみ。部活が19時まで",        date: ago(3),  done: false },
+  { id: "s06", name: "小林さん（中1）",  category: "LINE",  note: "体験授業の日程を調整中",             date: ago(4),  done: false },
+  { id: "s07", name: "松本さん（小4）",  category: "メール", note: "兄弟割引について聞かれている",       date: ago(5),  done: false },
+  { id: "s08", name: "山口さん（小6）",  category: "電話",  note: "料金表を送ってほしいとのこと",       date: ago(6),  done: false },
+  { id: "s09", name: "吉田さん（高2）",  category: "LINE",  note: "夏期講習の残席を確認したい",         date: ago(9),  done: false },
+  { id: "s10", name: "井上さん（中3）",  category: "電話",  note: "面談日程を確定。来週火曜18時",       date: ago(12), done: true },
+  { id: "s11", name: "清水さん（高3）",  category: "LINE",  note: "資料送付済み。返事待ち",             date: ago(14), done: true },
+  { id: "s12", name: "森さん（小3）",    category: "紹介",  note: "体験のあと入会。4月から週1",         date: ago(16), done: true },
+  { id: "s13", name: "大野さん（中1）",  category: "メール", note: "他塾と比較検討中とのこと",           date: ago(18), done: true },
+  { id: "s14", name: "岡田さん（高1）",  category: "LINE",  note: "今回は見送りとご連絡あり",           date: ago(21), done: true },
 ];
 
 const today = () => new Date().toISOString().slice(0, 10);
@@ -70,6 +88,9 @@ export default function Home() {
     localStorage.setItem(KEY, JSON.stringify(items));
     localStorage.setItem(NAME_KEY, appName);
   }, [items, appName, loaded]);
+
+  // 見本データのまま触っていない状態か（1件でも足す・消すと false になる）
+  const isSample = items.length === SAMPLE.length && items.every((i) => i.id.startsWith("s"));
 
   const counts = useMemo(
     () => ({ open: items.filter((i) => !i.done).length, done: items.filter((i) => i.done).length, all: items.length }),
@@ -163,6 +184,13 @@ export default function Home() {
           {/* ── 一覧 ── */}
           {view === "list" && (
             <>
+              {isSample && (
+                <div className="notice">
+                  表示中のデータは<b>見本</b>です。そのまま触って試せます。
+                  消したいときは、左メニューの<b>設定</b>から。
+                </div>
+              )}
+
               <div className="stats">
                 <div className="stat"><div className="n accent">{counts.open}</div><div className="l">未対応</div></div>
                 <div className="stat"><div className="n">{items.filter((i) => !i.done && daysAgo(i.date) >= 3).length}</div><div className="l">3日以上 放置</div></div>
