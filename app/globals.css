@@ -290,3 +290,77 @@ textarea.field { resize: vertical; min-height: 76px; line-height: 1.7; }
   margin-bottom: var(--s5);
 }
 .notice b{ color: var(--text); font-weight: 700; }
+
+/* =========================================================
+   画面の「型」── 3行の内容に合わせて切り替える
+   ⚠ ここは触らない。app/page.tsx の上にある3つの定数を選ぶだけ。
+   新しい色や余白を書かず、下から選ぶことで見た目を変える。
+   ========================================================= */
+
+/* ── 1. 色みの型（TONE）業種の空気に合わせる ───────────── */
+
+/* indigo ─ 士業・不動産・BtoB。落ち着いた紺 */
+[data-tone="indigo"] {
+  --accent: #2C4A7C; --accent-hover: #223C67; --accent-weak: #E6EBF3;
+  --bg: #F7F8FA; --surface-2: #F0F2F6; --border: #E2E5EC; --border-strong: #CDD2DC;
+  --text: #171B22; --text-sub: #575E6B; --text-weak: #888F9B;
+}
+
+/* clay ─ 建設・工務店・現場仕事。土のような茶 */
+[data-tone="clay"] {
+  --accent: #8C5233; --accent-hover: #713F26; --accent-weak: #F4EAE3;
+  --bg: #FAF8F6; --surface-2: #F3EFEB; --border: #E8E2DB; --border-strong: #D5CCC2;
+  --text: #1F1A16; --text-sub: #63594F; --text-weak: #948A7F;
+}
+
+/* sea ─ 医療・介護・公共。清潔な青 */
+[data-tone="sea"] {
+  --accent: #1D6A86; --accent-hover: #15556D; --accent-weak: #E3EFF3;
+  --bg: #F6F9FA; --surface-2: #EEF3F5; --border: #E0E7EA; --border-strong: #CAD4D8;
+  --text: #141C20; --text-sub: #556166; --text-weak: #869197;
+}
+
+/* wine ─ 飲食・小売・美容。深い臙脂 */
+[data-tone="wine"] {
+  --accent: #7A3346; --accent-hover: #632738; --accent-weak: #F3E7EA;
+  --bg: #FAF7F8; --surface-2: #F4EEEF; --border: #E9E0E2; --border-strong: #D6C9CC;
+  --text: #1E1619; --text-sub: #625458; --text-weak: #928387;
+}
+
+/* pine は :root の初期値（教育・サービス・その他） */
+
+/* ── 2. 密度の型（DENSITY）1日に見る件数で決める ─────────── */
+
+/* compact ─ 件数が多い仕事（1日20件以上）。1画面に多く載せる */
+[data-density="compact"] .row { padding: var(--s3) var(--s4); gap: var(--s2); }
+[data-density="compact"] .row-title { font-size: var(--t-sm); }
+[data-density="compact"] .row-sub { font-size: var(--t-xs); }
+[data-density="compact"] .row-meta { gap: var(--s2); }
+[data-density="compact"] .stat { padding: var(--s3) var(--s4); min-width: 108px; }
+[data-density="compact"] .stat .n { font-size: var(--t-xl); }
+[data-density="compact"] .stats { gap: var(--s2); margin-bottom: var(--s5); }
+[data-density="compact"] .list-head { padding: var(--s2) var(--s4); }
+[data-density="compact"] .content { padding: var(--s5) var(--s6); }
+
+/* roomy ─ 件数が少なく、1件が重い仕事（1日5件以下）。ゆったり見せる */
+[data-density="roomy"] .row { padding: var(--s5) var(--s6); }
+[data-density="roomy"] .row-title { font-size: var(--t-lg); }
+[data-density="roomy"] .stat { padding: var(--s5) var(--s6); min-width: 148px; }
+[data-density="roomy"] .list-head { padding: var(--s4) var(--s6); }
+
+/* ── 3. グループ見出し（LAYOUT が queue 以外のとき使う） ──── */
+.group-head {
+  padding: var(--s3) var(--s5);
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--border);
+  border-top: 1px solid var(--border);
+  display: flex; align-items: center; gap: var(--s3);
+  font-size: var(--t-sm); font-weight: 700; color: var(--text-sub);
+}
+.group-head:first-child { border-top: none; }
+.group-head .count { margin-left: auto; color: var(--text-weak); font-weight: 400; }
+.group-head .dot {
+  width: 7px; height: 7px; border-radius: 50%; background: var(--text-weak); flex: none;
+}
+.group-head.is-late .dot { background: var(--danger); }
+.group-head.is-now  .dot { background: var(--accent); }
