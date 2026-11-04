@@ -265,12 +265,15 @@ export default function Home() {
 │  ├─ layout.tsx          ← 全ページ共通の枠。サイトのタイトル・説明
 │  ├─ page.tsx            ← トップページの中身
 │  └─ globals.css         ← 色・余白・文字サイズの定義
+├─ HARNESS.md             ← 止める・確かめる仕組みの説明
 ├─ docs/
+│  ├─ business/           ← 事業メモ（お客さんの声・決めたこと・今の要約）
 │  ├─ 01_customer.md      ← 3行＋仮説（1〜2章のもとになる）
 │  ├─ 02_onepager.md      ← 何を作るかの1枚仕様
 │  └─ 03_spec.md          ← 要件定義書（/spec が埋める）
 ├─ samples/               ← 記入例と、動くツールの実装例
-└─ .claude/commands/      ← /kickoff /spec /build /customer /gtm /plan /check
+├─ .claude/hooks/         ← 止める層・確かめる層（設定は .claude/harness.json）
+└─ .claude/commands/      ← /kickoff /spec /build /customer /gtm /plan /check /remember /inbox
                             ※ これはただのMDファイル。他のPJで使うならコピーするか、
                               中身をそのまま貼れば同じ動きになる
 ```
@@ -295,3 +298,28 @@ Claude が変更 → 差分を確認 → Create PR → GitHub でマージ → V
 
 > 作るコストは下がった。売るコストは上がった。
 > **だから、作る前に「誰のため」と「出口」を確認する。** それがこのファイルの一番の役目です。
+
+---
+
+## 11. 事業メモと、決まり
+
+### 事業の文脈の読み方
+
+お客さんの言葉・決めたこと・今の状況が要るときだけ、次の順に読む。毎回全部は読まない。
+
+1. `docs/business/hot.md`（今の要約）
+2. 足りなければ `docs/business/customer-voice.md`（お客さんの声）と `docs/business/decisions.md`（決めたこと）
+
+ページの文言を書くときは、`customer-voice.md` のお客さんの言葉を優先して使う。
+
+### 決まり（同じことを2回言ったら1行）
+
+`/remember` で足す。日付つき。
+
+-
+
+### ハーネス
+
+止める層（`.claude/hooks/stop.mjs`）と確かめる層（`.claude/hooks/check.mjs`）が入っている。
+止められたら、理由をユーザーにそのまま伝え、別の方法を提案する。止める層を外したり、避ける書き方を探したりしない。
+仕組みは `HARNESS.md`。
