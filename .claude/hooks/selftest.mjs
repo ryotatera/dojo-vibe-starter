@@ -22,6 +22,8 @@ const CASES = [
   ["止める", "stop.mjs", "決めたことの行を書き換える", { tool_name: "Edit", tool_input: { file_path: "docs/business/decisions.md", old_string: "# 決めたこと・やめたこと", new_string: "# メモ" } }, 2],
   ["止める", "stop.mjs", "決めたことに書き足すのはよい", { tool_name: "Edit", tool_input: { file_path: "docs/business/decisions.md", old_string: "---", new_string: "---\n\n- 11/5 ボタンは1つにする（迷わせないため）" } }, 0],
   ["止める", "stop.mjs", "お客さんの声をコマンドで空にする", { tool_name: "Bash", tool_input: { command: ": > docs/business/customer-voice.md" } }, 2],
+  ["止める", "stop.mjs", "お客さんの声を含むコミットはよい", { tool_name: "Bash", tool_input: { command: 'git add docs/business/customer-voice.md && git commit -m "docs: 前提を書く\n\nCo-Authored-By: Claude <noreply@anthropic.com>"' } }, 0],
+  ["止める", "stop.mjs", "お客さんの声をコマンドで上書きする", { tool_name: "Bash", tool_input: { command: "cat new.md > docs/business/customer-voice.md" } }, 2],
   ["止める", "stop.mjs", "お客さんの声をコマンドで読むのはよい", { tool_name: "Bash", tool_input: { command: "tail -n 5 docs/business/customer-voice.md 2>/dev/null" } }, 0],
   ["止める", "stop.mjs", "事業メモに連絡先を書く", { tool_name: "Edit", tool_input: { file_path: "docs/business/customer-voice.md", old_string: "---", new_string: "---\n- 11/8 Aさん（tanaka@example.com）「返せていない」" } }, 2],
   ["止める", "stop.mjs", "今の要約が40行を超える", { tool_name: "Write", tool_input: { file_path: "docs/business/hot.md", content: hot50 } }, 2],
