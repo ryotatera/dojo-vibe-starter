@@ -82,10 +82,16 @@ if (tool === "Bash") {
   if (/\bgit\s+(reset\s+--hard|clean\s+-[a-zA-Z]*f|checkout\s+--\s+\.|restore\s+\.)/.test(cmd)) {
     stop("まだ保存していない変更がまとめて消える操作です。戻したいときは、PR を閉じるか、GitHub で Revert してください。");
   }
+  // コマンドを && ; || 改行 で区切り、そのファイルを書き換える区切りだけを止める
+  // （コミットメッセージの <noreply@anthropic.com> の > などで誤って止めないため）
+  const segs = cmd.replace(/\d*>&\d|\d*>\s*\/dev\/null/g, "").split(/&&|\|\||;|\n/);
   for (const f of appendOnly) {
-    const c = cmd.replace(/\d*>&\d|\d*>\s*\/dev\/null/g, "");
-    if (c.includes(f) && /(^|[^>])>(?!>)|\btruncate\b|\b(sed|perl)\s+-i|\b(mv|cp)\s|\bgit\s+(checkout|restore)\b/.test(c)) {
-      stop(`${f} は「書き足すだけのファイル」です。コマンドで上書き・移動・巻き戻しはしません。新しい行を足すだけにしてください。`);
+    for (const c of segs) {
+      if (!c.includes(f)) continue;
+      const overwrite = [...c.matchAll(/(?:^|[^>])>(?!>)\s*["']?([^\s"';|&<>]+)/g)].some((m) => m[1].includes(f));
+      if (overwrite || /\btruncate\b|\b(sed|perl)\s+-i|^\s*(mv|cp)\s|\bgit\s+(checkout|restore)\b/.test(c)) {
+        stop(`${f} は「書き足すだけのファイル」です。コマンドで上書き・移動・巻き戻しはしません。新しい行を足すだけにしてください。`);
+      }
     }
   }
   const rm = cmd.match(/\brm\s+((?:-[a-zA-Z]+\s+)*)([^;&|]*)/);
